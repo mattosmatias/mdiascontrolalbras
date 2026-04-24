@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { LogOut, LayoutDashboard, ClipboardEdit, History, Factory } from "lucide-react";
@@ -15,6 +15,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate({ to: "/auth" });
+    }
+  }, [loading, user, navigate]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-muted-foreground">
@@ -24,8 +30,11 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   if (!user) {
-    if (typeof window !== "undefined") navigate({ to: "/auth" });
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
+        Redirecionando...
+      </div>
+    );
   }
 
   const initials = (fullName || user.email || "?")
