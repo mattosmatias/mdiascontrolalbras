@@ -14,16 +14,124 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      daily_entries: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          entry_date: string
+          id: string
+          notes: string | null
+          s1_mov_lingoteiras: number
+          s10_mov_nao_conforme: number
+          s2_embalagem_pet: number
+          s3_mov_toplifting: number
+          s4_cintagem_metalica: number
+          s5_mov_estocagem: number
+          s6_transp_carreta_adm: number
+          s7_transp_carreta_fora: number
+          s8_transp_porto: number
+          s9_mov_toplifting_estoq: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          entry_date: string
+          id?: string
+          notes?: string | null
+          s1_mov_lingoteiras?: number
+          s10_mov_nao_conforme?: number
+          s2_embalagem_pet?: number
+          s3_mov_toplifting?: number
+          s4_cintagem_metalica?: number
+          s5_mov_estocagem?: number
+          s6_transp_carreta_adm?: number
+          s7_transp_carreta_fora?: number
+          s8_transp_porto?: number
+          s9_mov_toplifting_estoq?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          entry_date?: string
+          id?: string
+          notes?: string | null
+          s1_mov_lingoteiras?: number
+          s10_mov_nao_conforme?: number
+          s2_embalagem_pet?: number
+          s3_mov_toplifting?: number
+          s4_cintagem_metalica?: number
+          s5_mov_estocagem?: number
+          s6_transp_carreta_adm?: number
+          s7_transp_carreta_fora?: number
+          s8_transp_porto?: number
+          s9_mov_toplifting_estoq?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_authenticated: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "operador" | "diretoria"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +258,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "operador", "diretoria"],
+    },
   },
 } as const
