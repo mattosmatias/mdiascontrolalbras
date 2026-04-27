@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarIcon, Loader2, Save } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Loader2, Save } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -13,8 +13,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { dayOfWeekBR, formatISODate, getPeriodForDate } from "@/lib/services";
-import { HOURS, HOURS_BY_GROUP, fetchHoursByDate } from "@/lib/hours";
+import { dayOfWeekBR, eachDayInPeriod, fmtNumber, formatDateBR, formatISODate, getPeriodForDate, shiftPeriod } from "@/lib/services";
+import { HOURS, HOURS_BY_GROUP, computeHoursTotals, fetchHoursByDate, fetchHoursInRange, type DailyHours } from "@/lib/hours";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -136,7 +136,103 @@ function HorasPage() {
               {existingId ? "Atualizar" : "Salvar"}
             </Button>
           </div>
+
+          <MonthlyHoursReport currentDate={date} />
         </>
+      )}
+    </div>
+  );
+}
+
+function MonthlyHoursReport({ currentDate }: { currentDate: Date }) {
+  const [period, setPeriod] = useState(() => getPeriodForDate(currentDate));
+  const [rows, setRows] = useState<DailyHours[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let cancel = false;
+    setLoading(true);
+    fetchHoursInRange(period.start, period.end)
+      .then((d) => !cancel && setRows(d))
+      .catch((e) => toast.error(e.message))
+      .finally(() => !cancel && setLoading(false));
+    return () => { cancel = true; };
+  }, [period]);
+
+  const days = useMemo(() => eachDayInPeriod(period.start, period.end), [period]);
+  const totals = useMemo(() => computeHoursTotals(rows), [rows]);
+  const todayISO = formatISODate(new Date());
+
+  return (
+    <div className="space-y-3 pt-4">
+      <div className="flex items-center justify-between print:hidden">
+        <div>
+          <div className="text-xs uppercase tracking-wider text-muted-foreground">Contrato CTR 4600009749</div>
+          <h2 className="text-lg font-semibold">Relatório de Horas M.O. — Mensal</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => setPeriod((p) => shiftPeriod(p.start, -1))}><ChevronLeft className="h-4 w-4" /></Button>
+          <Button variant="outline" size="sm" onClick={() => setPeriod(getPeriodForDate(new Date()))}>Atual</Button>
+          <Button variant="outline" size="sm" onClick={() => setPeriod((p) => shiftPeriod(p.start, 1))}><ChevronRight className="h-4 w-4" /></Button>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="text-center text-sm text-muted-foreground py-8"><Loader2 className="h-5 w-5 animate-spin inline mr-2" />Carregando...</div>
+      ) : (
+        <div className="sheet-wrapper">
+          <table className="sheet">
+            <caption>Relatório de Horas M.O. — {period.label}</caption>
+            <thead>
+              <tr>
+                <th rowSpan={2} style={{ minWidth: 90 }}>Data</th>
+                <th rowSpan={2} style={{ minWidth: 70 }}>Dia</th>
+                {(Object.keys(HOURS_BY_GROUP) as Array<keyof typeof HOURS_BY_GROUP>).map((g) => (
+                  <th key={g} colSpan={HOURS_BY_GROUP[g].length}>{g}</th>
+                ))}
+              </tr>
+              <tr>
+                {HOURS.map((h) => (
+                  <th key={h.key} className="sub" title={h.label}>
+                    <div className="text-[10px] font-normal normal-case">{h.short}</div>
+                    <div className="text-[9px] font-normal opacity-80">(HH)</div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {days.map((d) => {
+                const iso = formatISODate(d);
+                const r = rows.find((x) => x.entry_date === iso);
+                const dow = d.getDay();
+                const isWeekend = dow === 0 || dow === 6;
+                const isToday = iso === todayISO;
+                return (
+                  <tr key={iso} className={`${isToday ? "today" : ""} ${isWeekend ? "weekend" : ""}`}>
+                    <td className="label">{formatDateBR(d)}</td>
+                    <td className="center text-[10px] text-muted-foreground">{dayOfWeekBR(d)}</td>
+                    {HOURS.map((h) => (
+                      <td key={h.key} className="num">
+                        {r && Number(r[h.key]) > 0 ? fmtNumber(Number(r[h.key]), 1) : <span className="text-muted-foreground/40">—</span>}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+              <tr className="total">
+                <td className="label">TOTAL HH</td>
+                <td className="center text-[10px]">período</td>
+                {HOURS.map((h) => (
+                  <td key={h.key} className="num">{fmtNumber(totals.totals[h.key], 1)}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+          <div className="sheet-meta">
+            <span>Período: {period.label}</span>
+            <span>HH = Horas-Homem</span>
+          </div>
+        </div>
       )}
     </div>
   );

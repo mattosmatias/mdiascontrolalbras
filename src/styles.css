@@ -177,3 +177,88 @@
   .shadow-elegant { box-shadow: var(--shadow-elegant); }
   .shadow-card { box-shadow: var(--shadow-card); }
 }
+
+/* ===== Spreadsheet-like report styling (Excel-like grids for diretoria) ===== */
+.sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  color: var(--color-foreground);
+  background: var(--color-card);
+}
+.sheet th, .sheet td {
+  border: 1px solid oklch(0.78 0.02 240);
+  padding: 4px 6px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.sheet thead th {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.sheet thead th.sub {
+  background: oklch(0.36 0.08 258);
+}
+.sheet tbody td.label {
+  background: oklch(0.965 0.008 240);
+  font-weight: 500;
+  text-align: left;
+}
+.sheet tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.sheet tbody td.center { text-align: center; }
+.sheet tbody tr.weekend td { background: oklch(0.97 0.02 80 / 0.5); }
+.sheet tbody tr.today td { background: oklch(0.95 0.05 250 / 0.5); }
+.sheet tbody tr.subtotal td {
+  background: oklch(0.92 0.025 245);
+  font-weight: 600;
+}
+.sheet tbody tr.total td {
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  font-weight: 700;
+  border-color: var(--color-primary);
+}
+.sheet tbody tr.forecast td {
+  background: oklch(0.92 0.08 80 / 0.6);
+  color: oklch(0.3 0.1 75);
+  font-weight: 600;
+}
+.sheet tbody tr.average td {
+  background: oklch(0.94 0.04 155 / 0.5);
+  font-weight: 500;
+  font-style: italic;
+}
+.sheet caption {
+  caption-side: top;
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
+  padding: 10px 12px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 13px;
+  border: 1px solid var(--color-primary);
+}
+.sheet-wrapper {
+  border: 1px solid oklch(0.78 0.02 240);
+  background: var(--color-card);
+  box-shadow: var(--shadow-card);
+  overflow: auto;
+}
+.sheet-meta {
+  display: flex;
+  justify-content: space-between;
+  background: oklch(0.965 0.008 240);
+  border: 1px solid oklch(0.78 0.02 240);
+  border-top: none;
+  padding: 6px 12px;
+  font-size: 11px;
+  color: var(--color-muted-foreground);
+}
