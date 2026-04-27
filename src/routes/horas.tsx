@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { CalendarIcon, Loader2, Save } from "lucide-react";
+import { CalendarIcon, ChevronLeft, ChevronRight, Loader2, Save } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { toast } from "sonner";
@@ -13,8 +13,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { dayOfWeekBR, formatISODate, getPeriodForDate } from "@/lib/services";
-import { HOURS, HOURS_BY_GROUP, fetchHoursByDate } from "@/lib/hours";
+import { dayOfWeekBR, eachDayInPeriod, fmtNumber, formatDateBR, formatISODate, getPeriodForDate, shiftPeriod } from "@/lib/services";
+import { HOURS, HOURS_BY_GROUP, computeHoursTotals, fetchHoursByDate, fetchHoursInRange, type DailyHours } from "@/lib/hours";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
