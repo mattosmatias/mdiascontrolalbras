@@ -50,6 +50,18 @@ function AuthPage() {
     navigate({ to: "/" });
   }
 
+  async function handleForgot() {
+    const email = (document.getElementById("login-email") as HTMLInputElement | null)?.value?.trim();
+    if (!email) return toast.error("Informe seu e-mail no campo acima primeiro.");
+    setBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Enviamos um link de recuperação para o seu e-mail.");
+  }
+
   async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -101,6 +113,13 @@ function AuthPage() {
                   {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Entrar
                 </Button>
+                <button
+                  type="button"
+                  onClick={handleForgot}
+                  className="block w-full text-center text-xs text-muted-foreground hover:text-primary"
+                >
+                  Esqueci minha senha
+                </button>
               </form>
             </TabsContent>
 
