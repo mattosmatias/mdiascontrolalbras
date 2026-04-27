@@ -71,6 +71,81 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_hours: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          enc_adn: number
+          enc_he100: number
+          enc_he65: number
+          entry_date: string
+          id: string
+          notes: string | null
+          ope_24h: number
+          ope_adm: number
+          ope_adn: number
+          ope_he100: number
+          ope_he65: number
+          sup_24h: number
+          sup_adm: number
+          sup_adn: number
+          sup_he100: number
+          sup_he65: number
+          tst_adn: number
+          tst_he100: number
+          tst_he65: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          enc_adn?: number
+          enc_he100?: number
+          enc_he65?: number
+          entry_date: string
+          id?: string
+          notes?: string | null
+          ope_24h?: number
+          ope_adm?: number
+          ope_adn?: number
+          ope_he100?: number
+          ope_he65?: number
+          sup_24h?: number
+          sup_adm?: number
+          sup_adn?: number
+          sup_he100?: number
+          sup_he65?: number
+          tst_adn?: number
+          tst_he100?: number
+          tst_he65?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          enc_adn?: number
+          enc_he100?: number
+          enc_he65?: number
+          entry_date?: string
+          id?: string
+          notes?: string | null
+          ope_24h?: number
+          ope_adm?: number
+          ope_adn?: number
+          ope_he100?: number
+          ope_he65?: number
+          sup_24h?: number
+          sup_adm?: number
+          sup_adn?: number
+          sup_he100?: number
+          sup_he65?: number
+          tst_adn?: number
+          tst_he100?: number
+          tst_he65?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -91,6 +166,54 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_prices: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          display_order: number
+          group_label: string
+          id: string
+          line_no: number
+          ref: string | null
+          source_key: string
+          source_kind: string
+          unit: string
+          unit_price: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description: string
+          display_order?: number
+          group_label: string
+          id?: string
+          line_no: number
+          ref?: string | null
+          source_key: string
+          source_kind: string
+          unit: string
+          unit_price?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          display_order?: number
+          group_label?: string
+          id?: string
+          line_no?: number
+          ref?: string | null
+          source_key?: string
+          source_kind?: string
+          unit?: string
+          unit_price?: number
           updated_at?: string
         }
         Relationships: []

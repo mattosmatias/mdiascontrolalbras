@@ -2,12 +2,15 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, ClipboardEdit, History, Factory } from "lucide-react";
+import { LogOut, LayoutDashboard, ClipboardEdit, History, Factory, Clock, DollarSign, Upload } from "lucide-react";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/lancamentos", label: "Lançamento diário", icon: ClipboardEdit },
+  { to: "/lancamentos", label: "Produção", icon: ClipboardEdit },
+  { to: "/horas", label: "Horas M.O.", icon: Clock },
+  { to: "/financeiro", label: "Financeiro", icon: DollarSign },
   { to: "/historico", label: "Histórico", icon: History },
+  { to: "/importar", label: "Importar", icon: Upload },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
