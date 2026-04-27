@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LancamentosRouteImport } from './routes/lancamentos'
+import { Route as ImportarRouteImport } from './routes/importar'
+import { Route as HorasRouteImport } from './routes/horas'
 import { Route as HistoricoRouteImport } from './routes/historico'
+import { Route as FinanceiroRouteImport } from './routes/financeiro'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -25,9 +28,24 @@ const LancamentosRoute = LancamentosRouteImport.update({
   path: '/lancamentos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImportarRoute = ImportarRouteImport.update({
+  id: '/importar',
+  path: '/importar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HorasRoute = HorasRouteImport.update({
+  id: '/horas',
+  path: '/horas',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HistoricoRoute = HistoricoRouteImport.update({
   id: '/historico',
   path: '/historico',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinanceiroRoute = FinanceiroRouteImport.update({
+  id: '/financeiro',
+  path: '/financeiro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -44,14 +62,20 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/financeiro': typeof FinanceiroRoute
   '/historico': typeof HistoricoRoute
+  '/horas': typeof HorasRoute
+  '/importar': typeof ImportarRoute
   '/lancamentos': typeof LancamentosRoute
   '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/financeiro': typeof FinanceiroRoute
   '/historico': typeof HistoricoRoute
+  '/horas': typeof HorasRoute
+  '/importar': typeof ImportarRoute
   '/lancamentos': typeof LancamentosRoute
   '/reset-password': typeof ResetPasswordRoute
 }
@@ -59,20 +83,42 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/financeiro': typeof FinanceiroRoute
   '/historico': typeof HistoricoRoute
+  '/horas': typeof HorasRoute
+  '/importar': typeof ImportarRoute
   '/lancamentos': typeof LancamentosRoute
   '/reset-password': typeof ResetPasswordRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/historico' | '/lancamentos' | '/reset-password'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/financeiro'
+    | '/historico'
+    | '/horas'
+    | '/importar'
+    | '/lancamentos'
+    | '/reset-password'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/historico' | '/lancamentos' | '/reset-password'
+  to:
+    | '/'
+    | '/auth'
+    | '/financeiro'
+    | '/historico'
+    | '/horas'
+    | '/importar'
+    | '/lancamentos'
+    | '/reset-password'
   id:
     | '__root__'
     | '/'
     | '/auth'
+    | '/financeiro'
     | '/historico'
+    | '/horas'
+    | '/importar'
     | '/lancamentos'
     | '/reset-password'
   fileRoutesById: FileRoutesById
@@ -80,7 +126,10 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  FinanceiroRoute: typeof FinanceiroRoute
   HistoricoRoute: typeof HistoricoRoute
+  HorasRoute: typeof HorasRoute
+  ImportarRoute: typeof ImportarRoute
   LancamentosRoute: typeof LancamentosRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
@@ -101,11 +150,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LancamentosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/importar': {
+      id: '/importar'
+      path: '/importar'
+      fullPath: '/importar'
+      preLoaderRoute: typeof ImportarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/horas': {
+      id: '/horas'
+      path: '/horas'
+      fullPath: '/horas'
+      preLoaderRoute: typeof HorasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/historico': {
       id: '/historico'
       path: '/historico'
       fullPath: '/historico'
       preLoaderRoute: typeof HistoricoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/financeiro': {
+      id: '/financeiro'
+      path: '/financeiro'
+      fullPath: '/financeiro'
+      preLoaderRoute: typeof FinanceiroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -128,7 +198,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  FinanceiroRoute: FinanceiroRoute,
   HistoricoRoute: HistoricoRoute,
+  HorasRoute: HorasRoute,
+  ImportarRoute: ImportarRoute,
   LancamentosRoute: LancamentosRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
