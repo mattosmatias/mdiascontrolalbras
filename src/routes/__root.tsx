@@ -31,8 +31,16 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Controle Diário Albras — CTR 4600009749" },
+      { title: "Ctr Diário Albras" },
       { name: "description", content: "Sistema de controle diário de operações Albras com previsão de fechamento de período." },
+      { property: "og:title", content: "Ctr Diário Albras" },
+      { name: "twitter:title", content: "Ctr Diário Albras" },
+      { property: "og:description", content: "Sistema de controle diário de operações Albras com previsão de fechamento de período." },
+      { name: "twitter:description", content: "Sistema de controle diário de operações Albras com previsão de fechamento de período." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0b6f46ac-cda6-4835-bf18-fa3db88136c0/id-preview-4fba8641--f03e1b7a-5f6b-4388-9fef-07a1c9c04798.lovable.app-1777374029667.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0b6f46ac-cda6-4835-bf18-fa3db88136c0/id-preview-4fba8641--f03e1b7a-5f6b-4388-9fef-07a1c9c04798.lovable.app-1777374029667.png" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:type", content: "website" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
