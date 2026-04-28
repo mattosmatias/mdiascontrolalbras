@@ -62,12 +62,11 @@ function LancamentosPage() {
   const saveCell = useCallback(async (iso: string, key: string, value: number) => {
     if (!canEdit) throw new Error("Sem permissão");
     const existing = byDate.get(iso);
-    const payload: Record<string, unknown> = {
+    const payload: any = {
       entry_date: iso,
       [key]: value,
       created_by: user?.id,
     };
-    // Keep other fields when updating
     if (existing) {
       for (const s of SERVICES) {
         if (s.key !== key) payload[s.key] = Number(existing[s.key] ?? 0);
