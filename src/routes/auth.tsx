@@ -8,7 +8,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -23,9 +22,6 @@ export const Route = createFileRoute("/auth")({
 const loginSchema = z.object({
   email: z.string().trim().email("E-mail inválido").max(255),
   password: z.string().min(6, "Mínimo 6 caracteres").max(72),
-});
-const signupSchema = loginSchema.extend({
-  fullName: z.string().trim().min(2, "Informe seu nome").max(120),
 });
 
 function AuthPage() {
@@ -43,9 +39,25 @@ function AuthPage() {
     const parsed = loginSchema.safeParse(Object.fromEntries(fd));
     if (!parsed.success) return toast.error(parsed.error.issues[0].message);
     setBusy(true);
-    const { error } = await supabase.auth.signInWithPassword(parsed.data);
+    const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
+    if (error) {
+      setBusy(false);
+      return toast.error(error.message);
+    }
+    // Check blocked flag
+    if (data.user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("blocked")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      if (profile?.blocked) {
+        await supabase.auth.signOut();
+        setBusy(false);
+        return toast.error("Sua conta está bloqueada. Contate o administrador.");
+      }
+    }
     setBusy(false);
-    if (error) return toast.error(error.message);
     toast.success("Bem-vindo!");
     navigate({ to: "/" });
   }
@@ -62,25 +74,6 @@ function AuthPage() {
     toast.success("Enviamos um link de recuperação para o seu e-mail.");
   }
 
-  async function handleSignup(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const parsed = signupSchema.safeParse(Object.fromEntries(fd));
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
-    setBusy(true);
-    const { error } = await supabase.auth.signUp({
-      email: parsed.data.email,
-      password: parsed.data.password,
-      options: {
-        emailRedirectTo: window.location.origin,
-        data: { full_name: parsed.data.fullName },
-      },
-    });
-    setBusy(false);
-    if (error) return toast.error(error.message);
-    toast.success("Conta criada. Você já pode acessar.");
-  }
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
@@ -93,60 +86,30 @@ function AuthPage() {
         </div>
 
         <div className="rounded-2xl border bg-card p-6 shadow-elegant">
-          <Tabs defaultValue="login">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login">Entrar</TabsTrigger>
-              <TabsTrigger value="signup">Criar conta</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="login" className="mt-6">
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="login-email">E-mail</Label>
-                  <Input id="login-email" name="email" type="email" autoComplete="email" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Senha</Label>
-                  <Input id="login-password" name="password" type="password" autoComplete="current-password" required />
-                </div>
-                <Button type="submit" className="w-full" disabled={busy}>
-                  {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Entrar
-                </Button>
-                <button
-                  type="button"
-                  onClick={handleForgot}
-                  className="block w-full text-center text-xs text-muted-foreground hover:text-primary"
-                >
-                  Esqueci minha senha
-                </button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup" className="mt-6">
-              <form onSubmit={handleSignup} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name">Nome completo</Label>
-                  <Input id="signup-name" name="fullName" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">E-mail corporativo</Label>
-                  <Input id="signup-email" name="email" type="email" autoComplete="email" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Senha</Label>
-                  <Input id="signup-password" name="password" type="password" autoComplete="new-password" required minLength={6} />
-                </div>
-                <Button type="submit" className="w-full" disabled={busy}>
-                  {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Criar conta
-                </Button>
-                <p className="text-xs text-muted-foreground text-center">
-                  Novos cadastros entram como <strong>operador</strong>. O primeiro usuário cadastrado é o administrador.
-                </p>
-              </form>
-            </TabsContent>
-          </Tabs>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="login-email">E-mail</Label>
+              <Input id="login-email" name="email" type="email" autoComplete="email" required />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="login-password">Senha</Label>
+              <Input id="login-password" name="password" type="password" autoComplete="current-password" required />
+            </div>
+            <Button type="submit" className="w-full" disabled={busy}>
+              {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Entrar
+            </Button>
+            <button
+              type="button"
+              onClick={handleForgot}
+              className="block w-full text-center text-xs text-muted-foreground hover:text-primary"
+            >
+              Esqueci minha senha
+            </button>
+          </form>
+          <p className="mt-6 text-xs text-muted-foreground text-center">
+            Novas contas são criadas apenas pelo administrador.
+          </p>
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">

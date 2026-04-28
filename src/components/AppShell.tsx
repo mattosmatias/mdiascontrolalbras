@@ -2,9 +2,9 @@ import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { LogOut, LayoutDashboard, ClipboardEdit, History, Factory, Clock, DollarSign, Upload } from "lucide-react";
+import { LogOut, LayoutDashboard, ClipboardEdit, History, Factory, Clock, DollarSign, Upload, Users } from "lucide-react";
 
-const NAV = [
+const BASE_NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/lancamentos", label: "Produção", icon: ClipboardEdit },
   { to: "/horas", label: "Horas M.O.", icon: Clock },
@@ -13,8 +13,13 @@ const NAV = [
   { to: "/importar", label: "Importar", icon: Upload },
 ] as const;
 
+const ADMIN_NAV = [
+  { to: "/usuarios", label: "Usuários", icon: Users },
+] as const;
+
 export function AppShell({ children }: { children: ReactNode }) {
-  const { user, fullName, roles, signOut, loading } = useAuth();
+  const { user, fullName, roles, signOut, loading, isAdmin } = useAuth();
+  const NAV = isAdmin ? [...BASE_NAV, ...ADMIN_NAV] : BASE_NAV;
   const navigate = useNavigate();
   const location = useLocation();
 
